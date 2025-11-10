@@ -1,0 +1,51 @@
+services:
+
+  proxy:
+    image: reverse-proxy:v1.0
+    build: 
+      context: nginx
+    networks:
+      - go-backend
+      - reverse-proxy
+    ports:
+      - "8080:443"
+      - "8081:80"
+
+  backend:
+    image: go-backend:v1.0
+    build: 
+      context: backend
+      dockerfile: Dockerfile # name for the dockerfile 
+    volumes:
+      - ./backend/db-password:/run/secrets/db-password
+    networks:
+      - go-backend
+
+  db:
+    image: mysql:8 
+    container_name: example
+    hostname: db
+    env_file:
+      - database/env
+    networks:
+      - go-backend 
+
+
+networks:
+  go-backend:
+    internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.1.0.0/24
+          gateway: 10.1.0.1
+
+  reverse-proxy:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.2.0.0/24
+          gateway: 10.2.0.1
+
+
+

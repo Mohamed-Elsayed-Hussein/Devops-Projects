@@ -74,6 +74,30 @@ docker run  --rm  -p 8000:8000 -v ./backend/db-password:/run/secrets/db-password
   - Forward requests to backend service (`backend:8000`)
   - Set required proxy headers.
 
+Direct run steps (development):
+
+```
+# From project1/nginx directory
+# Optionally generate self-signed certificates for development
+./generate-ssl.sh
+
+# Build the reverse proxy image
+docker build -t reverse-proxy:v1.0 .
+
+# Run the proxy attached to the go-backend network and expose HTTPS on host 8080
+# Note: include --network to allow the proxy to reach the backend container by hostname
+# Optionally also expose HTTP 8081->80 if nginx.conf supports HTTP->HTTPS redirect
+
+docker run --rm -d \
+  --name reverse-proxy \
+  --network go-backend \
+  -p 8080:443 \
+  -p 8081:80 \
+  reverse-proxy:v1.0
+```
+
+When using Docker Compose, the proxy is built/started by the `proxy` service and attached to both `go-backend` and `reverse-proxy` networks with ports mapped `8080:443` (and optionally `8081:80` if configured).
+
 ### 6. Convert to Docker Compose
 
 Created `compose.yaml` (docker-compose) with three services.
