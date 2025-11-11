@@ -1,6 +1,5 @@
 .dockerignore
 Dockerfile
-backend
 
 
 README.md
