@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db-data-pv
+  labels:
+    type: db-data
+spec:
+  persistentVolumeReclaimPolicy: Retain
+  capacity: 
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath: 
+    path: /home/mohamed/Documents/Devops/Projects/project2/data/db-data

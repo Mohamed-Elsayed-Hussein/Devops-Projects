@@ -20,9 +20,16 @@ spec:
       labels:
         app: db
     spec:
+      volumes:
+      - name: db-data 
+        persistentVolumeClaim:
+          claimName: db-data-pvc
       containers:
       - image: mysql:8
         name: mysql
         envFrom:
         - secretRef:
             name: database-sec-vars
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: db-data
