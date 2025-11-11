@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: backend-go
+  name: backend-go
+  namespace: 3-tier-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-go
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: backend-go
+    spec:
+      containers:
+      - image: mohamedelsayed22/go-backend-senior-projec1:v1.0
+        name: go-backend-senior-projec1
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+          - name: db-password-volume
+            mountPath: /run/secrets/db-password 
+            subPath: db-password    
+            readOnly: true
+      volumes:
+      - name: db-password-volume
+        secret:
+          secretName: db-password
