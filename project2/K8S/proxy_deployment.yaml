@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: proxy
+  name: proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: proxy
+    spec:
+      containers:
+      - image: mohamedelsayed22/nginx:v1.0
+        name: nginx
+        ports:
+        - containerPort: 443
+        resources: {}
+status: {}
